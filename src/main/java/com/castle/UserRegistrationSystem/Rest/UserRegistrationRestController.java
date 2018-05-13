@@ -1,7 +1,7 @@
 package com.castle.UserRegistrationSystem.Rest;
 
 import com.castle.UserRegistrationSystem.dto.UserDTO;
-import com.castle.UserRegistrationSystem.exception.CustomErrorType;
+import com.castle.UserRegistrationSystem.Exception.CustomErrorType;
 import com.castle.UserRegistrationSystem.repository.UserJpaRepository;
 
 import org.slf4j.Logger;
@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/user")
@@ -45,8 +47,10 @@ public class UserRegistrationRestController {
     }
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> createUser(@RequestBody final UserDTO userDTO) {
-        if(mUserJpaRepository.findByName(userDTO.getName())!=null) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody final UserDTO userDTO) {
+        logger.info("create user : {}",userDTO);
+        if (mUserJpaRepository.findByName(userDTO.getName()) != null) {
+            logger.error("unable to create. A user with name {} already exist",userDTO.getName());
             return new ResponseEntity<>(new CustomErrorType(
                     "Unable to create new user. A user with name " +
                             userDTO.getName() + " already exist."), HttpStatus.CONFLICT);

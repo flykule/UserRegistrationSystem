@@ -1,4 +1,4 @@
-package com.castle.UserRegistrationSystem.exception;
+package com.castle.UserRegistrationSystem.Exception;
 
 import com.castle.UserRegistrationSystem.dto.UserDTO;
 
