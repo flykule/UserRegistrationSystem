@@ -38,11 +38,19 @@ public class UserRegistrationRestController {
     @GetMapping("/")
     public ResponseEntity<List<UserDTO>> listAllUsers() {
         List<UserDTO> users = mUserJpaRepository.findAll();
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> createUser(@RequestBody final UserDTO userDTO) {
+        if(mUserJpaRepository.findByName(userDTO.getName())!=null) {
+            return new ResponseEntity<>(new CustomErrorType(
+                    "Unable to create new user. A user with name " +
+                            userDTO.getName() + " already exist."), HttpStatus.CONFLICT);
+        }
         mUserJpaRepository.save(userDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
@@ -61,11 +69,12 @@ public class UserRegistrationRestController {
             @PathVariable("id") final Long id,
             @RequestBody UserDTO userDTO
     ) {
-        UserDTO currentUser = userDTO;
         Optional<UserDTO> optionalUserDTO = mUserJpaRepository.findById(id);
-        if (optionalUserDTO.isPresent()) {
-            currentUser = optionalUserDTO.get();
+        if (!optionalUserDTO.isPresent()) {
+            return new ResponseEntity<>(new CustomErrorType(
+                    "Unable to update.User with id " + id + " not found."), HttpStatus.NOT_FOUND);
         }
+        UserDTO currentUser = optionalUserDTO.get();
 
         currentUser.setName(userDTO.getName());
         currentUser.setAddress(userDTO.getAddress());
@@ -77,7 +86,13 @@ public class UserRegistrationRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<UserDTO> deleteUser(@PathVariable("id") final Long id) {
+        Optional<UserDTO> optionalUserDTO = mUserJpaRepository.findById(id);
+        if (!optionalUserDTO.isPresent()) {
+            return new ResponseEntity<>(new CustomErrorType(
+                    "Unable to delete. User with id " + id + " not found."), HttpStatus.NOT_FOUND);
+        }
         mUserJpaRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new CustomErrorType("Delete user with id "+id+"."),
+                HttpStatus.NO_CONTENT);
     }
 }
