@@ -1,5 +1,8 @@
 package com.castle.UserRegistrationSystem.Exception;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,6 +16,7 @@ import java.awt.TrayIcon;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -20,6 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class RESTValidationHandler {
+
+    private MessageSource mMessageSource;
+
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        mMessageSource = messageSource;
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -55,8 +66,10 @@ public class RESTValidationHandler {
     private FieldValidationError mapToFieldValidationError(FieldError fieldError) {
         FieldValidationError error = new FieldValidationError();
         if (fieldError != null) {
+            Locale locale = LocaleContextHolder.getLocale();
+            String message = mMessageSource.getMessage(fieldError.getDefaultMessage(), null, locale);
             error.setField(fieldError.getField());
-            error.setMessage(fieldError.getDefaultMessage());
+            error.setMessage(message);
             error.setType(TrayIcon.MessageType.ERROR);
         }
         return error;
