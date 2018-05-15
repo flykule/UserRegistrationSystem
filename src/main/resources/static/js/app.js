@@ -1,5 +1,5 @@
 var app = angular.module('userregistrationsystem',['ngRoute','ngResource'])
-app.configure(function($routeProvider)){
+app.config(function($routeProvider) {
     $routeProvider
         .when('/list-all-users',{
             templateUrl: '/template/listuser.html',
@@ -11,7 +11,7 @@ app.configure(function($routeProvider)){
             templateUrl: '/template/userupdation.html',
             controller: 'usersDetailController'
         }).otherwise({
-            redirectTo: '/home'
+            redirectTo: '/home',
             templateUrl: '/template/home.html'
-        })
-}
+        });
+});
