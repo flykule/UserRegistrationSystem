@@ -5,8 +5,8 @@ import com.castle.UserRegistrationSystem.dto.UserDTO;
 public class CustomErrorType extends UserDTO {
     private String errorMessage;
 
-    public CustomErrorType(String errorMessgae) {
-        this.errorMessage = errorMessgae;
+    public CustomErrorType(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public String getErrorMessage() {

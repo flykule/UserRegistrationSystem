@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/user")
 public class UserRegistrationRestController {
