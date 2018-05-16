@@ -3,13 +3,13 @@ package com.castle.UserRegistrationSystem.Exception;
 import com.castle.UserRegistrationSystem.dto.UserDTO;
 
 public class CustomErrorType extends UserDTO {
-    private String errorMessgae;
+    private String errorMessage;
 
     public CustomErrorType(String errorMessgae) {
-        this.errorMessgae = errorMessgae;
+        this.errorMessage = errorMessgae;
     }
 
-    public String getErrorMessgae() {
-        return errorMessgae;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }
