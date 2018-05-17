@@ -8,6 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @Order(SecurityProperties.BASIC_AUTH_ORDER)
@@ -15,15 +17,17 @@ public class SpringSecurityConfiguration_InMemory extends WebSecurityConfigurerA
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder builder) throws Exception {
+        PasswordEncoder passwordEncoder =
+                PasswordEncoderFactories.createDelegatingPasswordEncoder();
         builder.inMemoryAuthentication()
                 .withUser("user")
-                .password("password")
+                .password(passwordEncoder.encode("123456"))
                 .roles("USER");
 
         builder.inMemoryAuthentication()
                 .withUser("admin")
-                .password("password")
-                .roles("USER,ADMIN");
+                .password(passwordEncoder.encode("123456"))
+                .roles("USER","ADMIN");
     }
 
     @Override
