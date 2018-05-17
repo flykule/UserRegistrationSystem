@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "UserDtos")
 public class UserDTO {
 
     @javax.persistence.Id

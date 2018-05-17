@@ -2,10 +2,12 @@ package com.castle.UserRegistrationSystem.dto;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.annotation.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Table;
 
 @Entity
@@ -13,16 +15,16 @@ import javax.persistence.Table;
 public class UserInfo {
 
     @javax.persistence.Id
-    @GeneratedValue
-    @Column(name = "USER_ID")
-    private Long Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid")
+    private Long id;
 
     @NotEmpty()
-    @Column(name = "USER_NAME")
+    @Column(name = "username")
     private String userName;
 
     @NotEmpty()
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     private String password;
 
     @Column(name = "enabled")
