@@ -28,7 +28,7 @@ app.controller('listUserController', function ($scope, $http, $location,
     });
 
     $scope.editUser = function (userId) {
-        $location.path("/update-user/"+userId);
+        $location.path("/update-user/" + userId);
     };
 
     $scope.deleteUser = function (userId) {
@@ -37,10 +37,10 @@ app.controller('listUserController', function ($scope, $http, $location,
             url: 'http://localhost:8090/api/user/' + userId
         })
             .then(
-            function (response) {
-                $location.path("/list-all-users");
-                $route.reload();
-            });
+                function (response) {
+                    $location.path("/list-all-users");
+                    $route.reload();
+                });
     }
 });
 
@@ -59,3 +59,66 @@ app.controller('usersDetailController', function ($scope, $http, $location, $rou
                 + errResponse.data.errorMessage;
         });
 });
+
+app.controller('homeController', function ($rootScope, $scope, $http, $location, $routeParams, $route) {
+    if ($rootScope.authenticated) {
+        $location.path('/');
+        $scope.error = false;
+    } else {
+        $location.path('/login');
+        $scope.error = true;
+    }
+});
+
+app.controller('loginController', function ($rootScope, $scope, $http, $location, $routeParams, $route) {
+    $scope.credentials = {};
+    $scope.resetForm = function () {
+        $scope.credentials = null;
+    };
+
+	var authenticate = function(credentials, callback) {
+        console.log("start authenticate");
+        var headers = $scope.credentials ? {
+            Authorization: "Basic " + btoa($scope.credentials.username + ":" +
+                $scope.credentials.password)
+        } : {};
+        $http.get('user', {
+            headers: headers
+        }).then(function (response) {
+            console.log("start authenticate success");
+            console.log(response);
+			if (response.data.name) {
+				$rootScope.authenticated = true;
+			} else {
+				$rootScope.authenticated = false;
+			}
+            callback && callback();
+        }, function () {
+            console.log("start authenticate failed");
+            $rootScope.authenticated = false;
+            callback && callback();
+		});
+	};
+
+	authenticate();
+
+    $scope.loginUser = function () {
+	      authenticate($scope.credentials, function() {
+            if ($rootScope.authenticated) {
+	            $location.path("/");
+	            $scope.error = false;
+            } else {
+	            $location.path("/login");
+	            $scope.error = true;
+            }
+        });
+    };
+});
+
+app.controller('logoutController',function ($rootScope, $scope, $http, $location, $route) {
+    $http.post('logout',{}.finally(function () {
+        $rootScope.authenticated = false;
+        $location.path('/');
+    }));
+});
+

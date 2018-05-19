@@ -1,9 +1,10 @@
 var app = angular.module('userregistrationsystem', ['ngRoute', 'ngResource']);
-app.config(function ($routeProvider) {
+
+app.config(function($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {
-            controller: 'homeController',
-            templateUrl: '/template/home.html'
+            templateUrl: '/template/home.html',
+            controller: 'homeController'
         })
         .when('/list-all-users', {
             templateUrl: '/template/listuser.html',
@@ -13,19 +14,21 @@ app.config(function ($routeProvider) {
         controller: 'registerUserController'
     }).when('/update-user/:id', {
         templateUrl: '/template/userupdation.html',
-        controller: 'usersDetailController'
-    }).when('/login', {
+			controller : 'usersDetailsController'
+		})
+
+		.when('/login',{
         templateUrl: '/login/login.html',
         controller: 'loginController'
     }).when('/logout', {
         templateUrl: '/login/login.html',
-        controller: 'loginController'
+        controller: 'logoutController'
     }).otherwise({
         redirectTo: '/login'
     });
 });
 
 app.config(['$httpProvider', function ($httpProvider) {
-    $httpProvider.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
     // $httpProvider.interceptors.push('AuthInterceptor');
+	$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 }]);

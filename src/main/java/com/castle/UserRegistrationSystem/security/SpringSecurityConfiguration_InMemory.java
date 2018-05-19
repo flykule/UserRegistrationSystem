@@ -10,9 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
-@Order(SecurityProperties.BASIC_AUTH_ORDER)
+@Order(SecurityProperties.IGNORED_ORDER)
 public class SpringSecurityConfiguration_InMemory extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -32,19 +33,18 @@ public class SpringSecurityConfiguration_InMemory extends WebSecurityConfigurerA
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().and()
+        http.httpBasic()
+                .realmName("User Registration System")
+                .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/user/")
-                .hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/api/user/")
-                .hasRole("USER")
-                .antMatchers(HttpMethod.PUT, "/api/user/**")
-                .hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/api/user/**")
-                .hasRole("ADMIN")
+                .antMatchers("/login/login.html", "/template/home.html", "/")
+                .permitAll()
+                .antMatchers(HttpMethod.OPTIONS)
+                .permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .csrf()
-                .disable();
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
 }
