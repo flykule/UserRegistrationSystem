@@ -39,8 +39,6 @@ public class SpringSecurityConfiguration_InMemory extends WebSecurityConfigurerA
                 .authorizeRequests()
                 .antMatchers("/login/login.html", "/template/home.html", "/")
                 .permitAll()
-                .antMatchers(HttpMethod.OPTIONS)
-                .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf()
